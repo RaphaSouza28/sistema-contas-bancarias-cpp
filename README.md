@@ -35,7 +35,52 @@
 - `telefone` (string): telefone do titular
 - `contaCadastrada` (bool): impede consultar/alterar antes de existir uma conta
 
-## Como compilar e executar
+## Etapa 2 – Arrays e histórico de movimentações
+
+Arquivo: [`etapa2/main.cpp`](etapa2/main.cpp)
+
+O sistema passa a guardar **até 100 contas** e **até 500 movimentações** em arrays
+(`numeroConta[MAX_CONTAS]`, `saldo[MAX_CONTAS]`, `contaMovimentacao[MAX_MOVIMENTACOES]` …),
+resolvendo a limitação de `numeroConta1`, `numeroConta2`… da Etapa 1.
+Como desafio, o programa foi **modularizado em funções** (`cadastrarConta`, `listarContas`,
+`consultarConta`, `depositar`, `sacar`, `transferir`, `registrarMovimentacao`, `exibirExtrato`).
+
+### Menu
+
+| Opção | Função |
+|---|---|
+| 1 | Cadastrar conta |
+| 2 | Listar contas |
+| 3 | Consultar conta pelo número |
+| 4 | Depositar (registra `D`) |
+| 5 | Sacar, verificando saldo suficiente (registra `S`) |
+| 6 | Transferir entre duas contas (registra `S` na origem e `D` no destino) |
+| 7 | Extrato da conta |
+| 8 | Ativar/Desativar conta |
+| 0 | Sair |
+
+### Validações
+
+- Número da conta maior que zero e **sem repetição**; limite de 100 contas
+- Depósito, saque e transferência só com valor positivo e contas **ativas**
+- Saque e transferência verificam saldo suficiente
+- Transferência exige contas diferentes e confere se há espaço para os **2 registros** no histórico
+- Proteção contra letras digitadas em campos numéricos
+
+### Exemplo (enunciado 2.5)
+
+Ana (1001, R$ 1.000) transfere R$ 300 para Bruno (1002, R$ 500):
+saldos finais R$ 700 e R$ 800, com os registros `1001 | S | 300` e `1002 | D | 300`.
+
+> Na Etapa 2 os dados ficam só na memória; a persistência em arquivo é a Etapa 3.
+
+```bash
+g++ etapa2/main.cpp -o banco2
+./banco2           # Linux/Mac
+banco2.exe         # Windows
+```
+
+## Como compilar e executar (Etapa 1)
 
 ```bash
 g++ main.cpp -o banco
