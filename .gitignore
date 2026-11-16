@@ -5,3 +5,8 @@
 banco
 banco5
 banco2
+banco3
+
+# Dados gerados ao executar o programa
+contas.txt
+movimentacoes.txt

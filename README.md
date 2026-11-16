@@ -72,13 +72,54 @@ Como desafio, o programa foi **modularizado em funções** (`cadastrarConta`, `l
 Ana (1001, R$ 1.000) transfere R$ 300 para Bruno (1002, R$ 500):
 saldos finais R$ 700 e R$ 800, com os registros `1001 | S | 300` e `1002 | D | 300`.
 
-> Na Etapa 2 os dados ficam só na memória; a persistência em arquivo é a Etapa 3.
+> Na Etapa 2 os dados ficam só na memória; a persistência em arquivo foi feita na Etapa 3.
 
 ```bash
 g++ etapa2/main.cpp -o banco2
 ./banco2           # Linux/Mac
 banco2.exe         # Windows
 ```
+
+## Etapa 3 – Persistência dos dados em arquivos
+
+Arquivo: [`etapa3/main.cpp`](etapa3/main.cpp)
+
+Mantém todas as funcionalidades da Etapa 2 e passa a **gravar os dados em arquivos de texto**
+(biblioteca `fstream`), para que nada se perca ao encerrar o programa.
+
+| Arquivo | Conteúdo (campos separados por `;`) | Exemplo |
+|---|---|---|
+| `contas.txt` | número;nome;CPF;tipo;saldo;ativa | `1001;Ana Silva;12345678900;1;700.00;1` |
+| `movimentacoes.txt` | conta;tipo;valor | `1001;S;300.00` |
+
+### Funções de arquivo
+
+| Função | O que faz |
+|---|---|
+| `carregarContas()` | No início, abre `contas.txt` com `ifstream`, lê cada linha com `getline()`, separa os campos por `;` e preenche os arrays, atualizando `quantidadeContas` |
+| `carregarMovimentacoes()` | Mesmo processo para `movimentacoes.txt`, atualizando `quantidadeMovimentacoes` |
+| `salvarContas()` | Reescreve `contas.txt` com `ofstream` percorrendo todos os arrays de contas |
+| `salvarMovimentacoes()` | Reescreve `movimentacoes.txt` com todo o histórico (inclusive o das execuções anteriores, que já foi carregado) |
+
+- Se os arquivos não existirem (primeira execução), `is_open()` retorna falso e o sistema começa vazio normalmente.
+- Cadastro, depósito, saque, transferência e ativar/desativar chamam as funções de salvamento logo após alterar os arrays.
+- Na transferência são gravados os dois saldos e os dois registros (`S` na origem, `D` no destino).
+- O nome do titular não pode conter `;`, porque esse caractere é o separador do arquivo.
+
+### Testes realizados (enunciado 2.8)
+
+1. **Cadastro e recuperação:** 3 contas cadastradas, programa encerrado e reaberto → as 3 contas aparecem na listagem.
+2. **Saldos:** depósito na 1003 e saque na 1002, programa reaberto → saldos mantidos.
+3. **Transferência:** 1001 → 1002 de R$ 300, programa reaberto → saldos atualizados e extratos com `S` e `D`.
+4. **Histórico:** novo depósito em outra execução → o extrato mostra as movimentações antigas e a nova.
+
+```bash
+g++ etapa3/main.cpp -o banco3
+./banco3           # Linux/Mac
+banco3.exe         # Windows
+```
+
+> Os arquivos `contas.txt` e `movimentacoes.txt` são criados na pasta de onde o programa é executado.
 
 ## Como compilar e executar (Etapa 1)
 
